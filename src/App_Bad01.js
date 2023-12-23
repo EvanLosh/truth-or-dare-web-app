@@ -1,4 +1,9 @@
 // App.js
+
+// Copilot was overwhelmed by our instructions and underdelivered. The result is woefully incomplete and not perfectly consistent with our input.
+
+// Everything below this line was written by Copilot.
+
 import React, { useState, useEffect } from 'react';
 import NewGame from './NewGame';
 import GameBoard from './GameBoard';
