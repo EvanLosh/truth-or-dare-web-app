@@ -10,7 +10,7 @@
 
 // App.js
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import NewGame from './components/NewGame';
 import GameBoard from './components/GameBoard';
@@ -18,6 +18,16 @@ import HowToPlay from './components/HowToPlay';
 import Pools from './components/Pools';
 
 const App = () => {
+
+  const [prompts, setPrompts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/prompts') // Adjust the URL based on your JSON server setup
+      .then((response) => response.json())
+      .then((data) => setPrompts(data))
+      .catch((error) => console.error('Error fetching prompts:', error));
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
   return (
     <Router>
       <div className="App">
