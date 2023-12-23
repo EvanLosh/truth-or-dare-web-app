@@ -8,6 +8,8 @@
 // Each <Route> specifies a path and the corresponding component to render.
 // Remember to create the actual NewGame, GameBoard, HowToPlay, and Pools components in separate files. Happy routing! 🚀🔗
 
+// App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import NewGame from './components/NewGame';
@@ -19,25 +21,35 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">New Game</Link>
-            </li>
-            <li>
-              <Link to="/game">Game Board</Link>
-            </li>
-            <li>
-              <Link to="/how-to-play">How to Play</Link>
-            </li>
-            <li>
-              <Link to="/pools">Pools</Link>
-            </li>
-          </ul>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <div className="container">
+            <Link className="navbar-brand" to="/">My Game App</Link>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/new-game">New Game</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/game-board">Game Board</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/how-to-play">How to Play</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/pools">Pools</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </nav>
+
+        {/* Define your routes and components */}
         <Switch>
-          <Route path="/" exact component={NewGame} />
-          <Route path="/game" component={GameBoard} />
+          <Route path="/new-game" component={NewGame} />
+          <Route path="/game-board" component={GameBoard} />
           <Route path="/how-to-play" component={HowToPlay} />
           <Route path="/pools" component={Pools} />
         </Switch>
