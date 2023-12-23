@@ -8,8 +8,26 @@ import axios from 'axios'; // Import Axios
 
 const App = () => {
 
-  const [truths, setTruths] = useState([]);
-  const [dares, setDares] = useState([]);
+  const [truths, setTruths] = useState([{
+    id: 1,
+    body: "",
+    likedByUser: false,
+    dislikedByUser: false,
+    likes: 0,
+    dislikes: 0,
+    skips: 0,
+    rerolls: 0,
+  }]);
+  const [dares, setDares] = useState([{
+    id: 1,
+    body: "",
+    likedByUser: false,
+    dislikedByUser: false,
+    likes: 0,
+    dislikes: 0,
+    skips: 0,
+    rerolls: 0,
+  }]);
 
   useEffect(() => {
     // Fetch truths
@@ -23,17 +41,14 @@ const App = () => {
       .catch(error => console.error('Error fetching dares:', error));
   }, []); // Empty dependency array to run only once on mount
 
-  const initialRuleset = {
+  // State to hold the ruleset
+  const [ruleset, setRuleset] = useState({
     players: [],
     skip: true,
     reroll: true,
     rerolls: 3,
-    truthsPool: 'all',
-    daresPool: 'all',
-  };
-
-  // State to hold the ruleset
-  const [ruleset, setRuleset] = useState(initialRuleset);
+    bannedTags: ""
+  });
 
   // Callback function to update the ruleset
   const updateRuleset = (updatedRuleset) => {
@@ -56,6 +71,57 @@ const App = () => {
       item.dislikedByUser = !item.dislikedByUser;
       item.dislikes += item.dislikedByUser ? 1 : -1;
     }
+  }
+
+  // Function to increment skips
+  function incrementSkips(itemId) {
+    const item = truths.concat(dares).find((obj) => obj.id === itemId);
+    if (item) {
+      item.skips += 1;
+    }
+  }
+
+  // Function to increment rerolls
+  function incrementRerolls(itemId) {
+    const item = truths.concat(dares).find((obj) => obj.id === itemId);
+    if (item) {
+      item.rerolls += 1;
+    }
+  }
+
+  function addNewTruthOrDare(type, text) {
+    // Create a new dare object
+    const newTruthOrDare = {
+      id: truths.concat(dares).length + 1, // Assign a unique ID (you can adjust this logic)
+      text: text,
+      likedByUser: false,
+      dislikedByUser: false,
+      likes: 0,
+      dislikes: 0,
+      skips: 0,
+      rerolls: 0,
+    };
+
+    // Add the new dare to the array
+    if (type === "truth") {
+      truths.push(newTruthOrDare);
+    }
+    if (type === "dare") {
+      dares.push(newTruthOrDare)
+    }
+  }
+
+  // Function to filter objects based on tags
+  function filterByTags(query) {
+    const queryWords = query.toLowerCase().split(" ");
+    setTruths(truths.filter((item) => {
+      const itemTags = item.tags.toLowerCase().split(" ");
+      return !queryWords.some((word) => itemTags.includes(word));
+    }));
+    setDares(dares.filter((item) => {
+      const itemTags = item.tags.toLowerCase().split(" ");
+      return !queryWords.some((word) => itemTags.includes(word));
+    }));
   }
 
   return (
@@ -84,10 +150,10 @@ const App = () => {
       </div>
       <Router>
         <Switch>
-          <Route path="/new-game" component={<NewGame ruleset={ruleset} updateRuleset={updateRuleset} />} />
-          <Route path="/game-board" component={GameBoard} />
-          <Route path="/how-to-play" component={HowToPlay} />
-          <Route path="/pools" component={Pools} />
+          <Route path="/new-game" component={<NewGame ruleset={ruleset} updateRuleset={updateRuleset} filterByTags={filterByTags} />} />
+          <Route path="/game-board" component={<GameBoard truths={truths} dares={dares} ruleset={ruleset} toggleDislikedByUser={toggleDislikedByUser} toggleLikedByUser={toggleLikedByUser} incrementRerolls={incrementRerolls} incrementSkips={incrementSkips} />} />
+          <Route path="/how-to-play" component={<HowToPlay />} />
+          <Route path="/pools" component={<Pools truths={truths} dares={dares} toggleDislikedByUser={toggleDislikedByUser} toggleLikedByUser={toggleLikedByUser} />} />
           {/* Add more routes as needed */}
         </Switch>
       </Router>
